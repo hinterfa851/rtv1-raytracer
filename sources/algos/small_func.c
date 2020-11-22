@@ -1,13 +1,11 @@
 #include "../../includes/rtv1.h"
 
-// CLEAR
-
-int get_light(int start, int end, double percentage)        //clear
+int get_light(int start, int end, double percentage)
 {
     return ((int)((1 - percentage) * start + percentage * end));
 }
 
-int get_col(float offset, unsigned int color)   //clear
+int get_col(float offset, unsigned int color)
 {
     int     red;
     int     green;
@@ -23,15 +21,15 @@ int get_col(float offset, unsigned int color)   //clear
     return ((red << 16) | (green << 8) | blue);
 }
 
-void ft_add_spec(t_vec *diffuse, float spec)
+void ft_add_spec(t_vec *diffuse, float spec, float NdotL)
 {
     spec = saturate(spec);
-    diffuse->i += 255 * pow(spec, 80);
-    diffuse->j += 255 * pow(spec, 80);
-    diffuse->k += 255 * pow(spec, 80);                
+    diffuse->i += 255 * spec * NdotL;
+    diffuse->j += 255 * spec * NdotL;
+    diffuse->k += 255 * spec * NdotL;                
 }
 
-int ft_calc_res(t_scene *scene, int i, float NdotL, float spec)     //clear
+int ft_calc_res(t_scene *scene, int i, float NdotL, float spec)
 {
     t_vec *diffuse;
     int res;
@@ -39,7 +37,7 @@ int ft_calc_res(t_scene *scene, int i, float NdotL, float spec)     //clear
     NdotL = saturate(NdotL);
     res = get_col(NdotL, scene->objs[i].color);
     diffuse = ft_split_col(res);
-    ft_add_spec(diffuse, spec);
+    ft_add_spec(diffuse, spec, NdotL);
     res = ft_icol(diffuse);
     free(diffuse);
     return (res);

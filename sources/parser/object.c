@@ -81,8 +81,8 @@ int		create_object(t_data *data, char *line)
 	}
 	if (ft_strequ(tab[0], "light"))
 		set_light(data, tab);
-	if (ft_strequ(tab[0], "ambient"))
-		ambience(data, tab[1]);
+	// if (ft_strequ(tab[0], "ambient"))
+	// 	ambience(data, tab[1]);
 	free_tab(tab);
 	return (0);
 }

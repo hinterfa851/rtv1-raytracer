@@ -36,7 +36,7 @@
 
 # define WIDTH 900
 # define HEIGHT 900
-# define FOV    90
+# define FOV    45
 # define RADIUS	10
 # define LENGTH 100
 # define CAM_D	200
@@ -168,6 +168,7 @@ typedef struct      s_object
     t_vec           *p1;
     t_vec           *rot;
     t_vec           col;
+
     float           radius;
     unsigned int    color;
 
@@ -265,7 +266,7 @@ t_vec	rot_i(t_vec dir, double angle);
 
 
 // col 
-void ft_add_spec(t_vec *diffuse, float spec);
+void ft_add_spec(t_vec *diffuse, float spec, float NdotL);
 int ft_calc_res(t_scene *scene, int i, float NdotL, float spec);
 float saturate(float d);
 t_vec *point_coords(t_scene *scene, float t, t_vec *dir);

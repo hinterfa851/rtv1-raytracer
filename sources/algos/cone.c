@@ -1,6 +1,6 @@
 #include "../../includes/rtv1.h"
 
-t_object	cr_cone(t_vec *p1, float radius, unsigned int color, t_vec *p4)				// 1 t_vec *
+t_object	cr_cone(t_vec *p1, float radius, unsigned int color, t_vec *p4)
 {
 	t_vec *angletovec;
 	t_vec *init_vec;
@@ -16,10 +16,33 @@ t_object	cr_cone(t_vec *p1, float radius, unsigned int color, t_vec *p4)				// 1
 	res.ray_intersect = &ray_intersect_cone;
 	res.color_find = &color_find_cone;
 	free(init_vec);
+	free(p4);
 	return (res);
 }
 
-float	ray_intersect_cone(t_vec *dir, t_vec *point, t_object obj)						// ВФТПУК
+float find_b_cone(t_vec *point, t_vec *p1, t_vec *rot, t_vec *dir)
+{
+	float res;
+	t_vec *to_del;
+
+	to_del = ft_substr(point, p1);
+	res = 2 * (ft_scal(dir, to_del) - (1 + CON_ANG * CON_ANG) * ft_scal(dir, rot) * ft_scal(to_del, rot));
+	free(to_del);
+	return (res);
+}
+
+float find_c_cone(t_vec *point, t_vec *p1, t_vec *rot)
+{
+	float res;
+	t_vec *to_del;
+
+	to_del = ft_substr(point, p1);
+	res = ft_scal(to_del, to_del) - (1 + CON_ANG * CON_ANG) * ft_scal(to_del, rot) * ft_scal(to_del, rot);
+	free(to_del);
+	return (res);
+}
+
+float	ray_intersect_cone(t_vec *dir, t_vec *point, t_object obj)
 {
 	float a;
 	float b;
@@ -29,11 +52,8 @@ float	ray_intersect_cone(t_vec *dir, t_vec *point, t_object obj)						// ВФТ�
 
 	a = ft_scal(dir, dir) - (1 + CON_ANG * CON_ANG)
 	* ft_scal(dir, obj.rot) * ft_scal(dir, obj.rot);
-	b = 2 * (ft_scal(dir, ft_substr(point, obj.p1)) - (1 + CON_ANG * CON_ANG)
-	* ft_scal(dir, obj.rot) * ft_scal(ft_substr(point, obj.p1), obj.rot));
-	c = ft_scal(ft_substr(point, obj.p1), ft_substr(point, obj.p1)) -
-	(1 + CON_ANG * CON_ANG) * ft_scal(ft_substr(point, obj.p1), obj.rot)
-	* ft_scal(ft_substr(point, obj.p1), obj.rot);
+	b = find_b_cone(point, obj.p1, obj.rot, dir);
+	c = find_c_cone(point, obj.p1, obj.rot);
 	d = b * b - 4 * a * c;
 	t = d < 0 ? -1 : get_t(a, b, d);	
 	if (t < 0)
@@ -41,7 +61,7 @@ float	ray_intersect_cone(t_vec *dir, t_vec *point, t_object obj)						// ВФТ�
 	return (t);
 }
 
-t_vec *find_cone_n(t_vec *point, t_scene *scene, t_vec *sender)			// t_vec *res
+t_vec *find_cone_n(t_vec *point, t_scene *scene, t_vec *sender)
 {
 	t_vec *res;
 	t_vec *a;
@@ -59,7 +79,7 @@ t_vec *find_cone_n(t_vec *point, t_scene *scene, t_vec *sender)			// t_vec *res
 	return(res);
 }
 
-t_vec	*color_find_cone(t_vec *point, t_scene *scene, t_vec *sender, int k)	// t_vec *res
+t_vec	*color_find_cone(t_vec *point, t_scene *scene, t_vec *sender, int k)
 {
 	t_vec *res;
 	t_vec *vec1;

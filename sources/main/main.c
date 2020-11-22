@@ -38,7 +38,8 @@ t_object cr_object(t_obj *data)
 	t_vec *rot;
 
 	pos = cr_point(data->c.x, data->c.y, data->c.z);
-	rot = cr_point(data->v.x, data->v.x, data->v.x);
+	rot = cr_point(data->v.x, data->v.y, data->v.z);
+	// printf("data check2 %f\t%f\t%f\n", rot->i, rot->j, rot->k);
 	if (data->type == 1)
 		return (cr_sphere(pos, data->r, data->color, rot));
 	else if (data->type == 2)
@@ -68,15 +69,11 @@ void fill_middleware(t_scene *scene, t_data data, t_mx *box)
 
 	i = 0;
 	j = 0;
-//	memorer(scene, box);
-	// printf("*Ok\t %d\n", data.obj_n);
 	scene->obj_count = data.obj_n;
-	// printf("Ok\n");
 	fill_z_buffer(scene);
 	scene->objs = malloc(sizeof(t_object) * scene->obj_count);
 	while(i < data.obj_n)
 	{
-		// printf("%d\n", i);
 		scene->objs[i] = cr_object((t_obj *)data.figur->content);
 		data.figur = data.figur->next;
 		i++;
@@ -86,13 +83,8 @@ void fill_middleware(t_scene *scene, t_data data, t_mx *box)
 	i = count_light_len(data.light);
 	scene->light = malloc(sizeof(t_light) * i);
 	scene->light_count = i;
-	// printf("hui\n");
-	// printf("\n%d\n", i);
-	// printf("\n%f\t%f\t%f\n", ((t_light *)(data.light->content))->x, ((t_light *)(data.light->content))->y, ((t_light *)(data.light->content))->z);
 	while(j < i)
 	{
-		// printf("saving\n");
-		// printf("test - %f\t%f\t%f\n", (((t_light *)(data.light)->content))->x, (((t_light *)(data.light)->content))->y, (((t_light *)(data.light)->content))->z);
 		scene->light[j].pos = cr_point(((t_light *)(data.light->content))->x, ((t_light *)(data.light->content))->y, ((t_light *)(data.light->content))->z);
 		scene->light[j].power = ((t_light *)(data.light->content))->intens;
 		data.light = data.light->next;
@@ -129,6 +121,8 @@ int		main(int argc, char **argv)
 		printf("in main %f\t%f\t%f\n", scene->light[0].pos->i, scene->light[0].pos->j, scene->light[0].pos->k);
 		printf("in main %f\t%f\t%f\n", scene->objs[0].p1->i, scene->objs[0].p1->j, scene->objs[0].p1->k);
 		printf("in main %f\t%f\t%f\n", scene->cam->pos->i, scene->cam->pos->j, scene->cam->pos->k);
+		printf("in main %f\t%f\t%f\n", scene->objs[0].rot->i, scene->objs[0].rot->j, scene->objs[0].rot->k);
+		
 	//	printf("%f\t%f\t%f\n", ((t_light *)(data.light->content))->x, ((t_light *)(data.light->content))->y, ((t_light *)(data.light->content))->z);
 		// printf("%f\t%f\t%f\n", scene->objs[0].p1->i, scene->objs[0].p1->j, scene->objs[0].p1->k);
 		// printf("%f\t%f\t%f\n", scene->light[0].pos->i, scene->light[0].pos->j, scene->light[0].pos->k);
@@ -142,6 +136,8 @@ int		main(int argc, char **argv)
     	// box->draw_arr = mlx_get_data_addr(box->image_id, &(box->bits_per_pixel), &(box->size_line), &(box->endian));
     	render(scene,  box);
 		mlx_put_image_to_window(box->conn_id, box->win_id, box->image_id, 0, 0);
+		free(scene->cam->dir);
+		free(scene->cam->pos);
 		mlx_loop(box->conn_id);
 	}
 	else

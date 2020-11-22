@@ -12,7 +12,7 @@ t_vec	*cr_point(float i, float j, float k)
 	return (ball);
 }
 
-t_object	cr_sphere(t_vec *p1, float radius, unsigned int color, t_vec *p4)		// t_vec *angle_to_vec
+t_object	cr_sphere(t_vec *p1, float radius, unsigned int color, t_vec *p4)
 {
 	t_object res;
 	t_vec *angletovec;
@@ -32,10 +32,11 @@ t_object	cr_sphere(t_vec *p1, float radius, unsigned int color, t_vec *p4)		// t
 	res.ray_intersect = ray_intersect_sp;
 	res.color_find = color_find_sp;
 	free(init_vec);
+	free(p4);
 	return (res);
 }
 
-double	get_t(float a, float b, float d)		// clear
+double	get_t(float a, float b, float d)
 {
 	double	t1;
 	double	t2;
@@ -49,7 +50,7 @@ double	get_t(float a, float b, float d)		// clear
 	return (-1);
 }
 
-float sp_find_b(t_vec *point, t_vec *p1, t_vec *dir)		// clear
+float sp_find_b(t_vec *point, t_vec *p1, t_vec *dir)
 {
 	float res;
 	t_vec *a;
@@ -60,7 +61,7 @@ float sp_find_b(t_vec *point, t_vec *p1, t_vec *dir)		// clear
 	return (res);
 }
 
-float sp_find_c(t_vec *point, t_vec *p1, float radius)		// clear
+float sp_find_c(t_vec *point, t_vec *p1, float radius)
 {
 	float res;
 	t_vec *a;
@@ -74,7 +75,7 @@ float sp_find_c(t_vec *point, t_vec *p1, float radius)		// clear
 	return (res);
 }
 
-float	ray_intersect_sp(t_vec *dir, t_vec *point, t_object object)		//clear
+float	ray_intersect_sp(t_vec *dir, t_vec *point, t_object object)
 {
 	float a;
 	float b;
@@ -92,7 +93,7 @@ float	ray_intersect_sp(t_vec *dir, t_vec *point, t_object object)		//clear
 	return (t);
 }
 
-t_vec *color_find_sp(t_vec *point, t_scene *scene, t_vec *sender, int k)		// res t_vec *
+t_vec *color_find_sp(t_vec *point, t_scene *scene, t_vec *sender, int k)
 {
 	t_vec *n;
 	t_vec *vec2;
@@ -105,6 +106,7 @@ t_vec *color_find_sp(t_vec *point, t_scene *scene, t_vec *sender, int k)		// res
 	vec2 = ft_substr(point, scene->light[k].pos);
 	vec1 = ft_substr(point, scene->cam->pos);
 	ft_normilize(n);
+	ft_normilize(vec1);
 	ft_normilize(vec2);
 	res->i = ft_scal(n, vec2);
 	H = ft_add_vec(vec2, vec1);
