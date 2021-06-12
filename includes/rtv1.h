@@ -1,21 +1,9 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   rtv1.h                                             :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: glychest <glychest@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/11/15 22:20:11 by glychest          #+#    #+#             */
-/*   Updated: 2020/11/20 16:08:35 by hinterfa         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #ifndef RTV1_H
 # define RTV1_H
 
 # include <math.h>
 # include "../libft/libft.h"
-# include "../minilibx_macos/mlx.h"
+# include </home/dimas/Загрузки/fractol/Minilibx_Installer/minilibx/mlx.h>
 # include <sys/types.h>
 # include <sys/uio.h>
 # include <unistd.h>
@@ -34,253 +22,269 @@
 # define NO_FD 14
 # define INVALID 15
 
-# define WIDTH 900
-# define HEIGHT 900
-# define FOV    45
-# define RADIUS	10
-# define LENGTH 100
-# define CAM_D	200
-# define MAXDISTANCE 10000
-# define CON_ANG 0.85
-
 # define RED 16711680
 # define GREEN 65280
 # define BLUE 2831278
 
-# define WIN_SIZE_X	900
-# define WIN_SIZE_Y	900
-
+# define WIN_SIZE_X	600
+# define WIN_SIZE_Y	600
+# define MAXDISTANCE 10000
 
 # define PI 3.141592
+# define FOV    45
+# define CON_ANG 0.85
 
-typedef struct		s_object t_object;
+typedef struct		s_obj object;
+
 
 typedef struct      s_vec
 {
-    float           i;
-    float           j;
-    float           k;
-}                  t_vec;
+    double           i;
+    double           j;
+    double           k;
+}                  vector;
 
-typedef struct		s_vector
+
+typedef struct s_mlx
 {
-	double			x;
-	double			y;
-	double			z;
-}					t_vector;
+    int     bits_per_pixel;
+    int     size_line;
+    int     endian;
+    void    *connection_id;
+    void    *window_id;
+    void    *image_id;
+    char    *color_arr;
 
-typedef struct		s_light
-{
-	double			x;
-	double			y;
-	double			z;
-	double			intens;
-}					t_light;
-
-typedef struct      s_li
-{
-    t_vec			*pos;
-    float			power;
-}                  t_li;
-
-typedef struct		s_obj
-{
-	t_vector		c;
-	t_vector		v;
-	double			a;
-	double			r;
-	double			specular;
-	int				color;
-	int				type;
-}					t_obj;
-
+}               d_mlx;
 
 typedef struct		s_camera
 {
-	double			x;
-	double			y;
-	double			z;
-	int				canv_h;
-	int				canv_w;
-	int				canv_d;
-	int				cam;
-}					t_camera;
+	vector          position;
+    vector          rotation;
+    int             count;
+}					camera;
 
-typedef struct      s_cam
+typedef struct		s_light
 {
-    t_vec			*pos;
-    t_vec			*dir;
-}                  t_cam;
-
-typedef struct		s_img
-{
-	void			*img;
-	int				bit_per_pixel;
-	int				size_line;
-	int				endline;
-	char			*img_data;
-}					t_img;
-
-typedef struct		s_mlx
-{
-	void			*win;
-	void			*mlx;
-}					t_mlx;
+	vector          position;
+    double			intensity;
+}					t_light;
 
 typedef struct		s_data
 {
-	t_mlx			mlx;
-	t_img			img;
-	t_img			canv;
-	t_camera		camera;
-	t_obj			*objs;
-	t_list			*figur;
-	t_list			*light;
-	double			ambient;
-	int				obj_n;
-	int				fd;
-}					t_data;
-
-typedef struct		s_mx
-{
-	void		*conn_id;
-	void		*win_id;
-	char		*draw_arr;
-	void		*image_id;
-	int			endian;
-	int			size_line;
-	int			bits_per_pixel;
-}					t_mx;
-
-typedef struct      s_scene
-{
-    t_cam           *cam;
-    t_li            *light;
-    t_object        *objs;
+	camera		    camera;             //pointer??
+	object			*objects_array;     
+    t_light         *lights_array;
     float           *z_buffer;
-    int             obj_count;
+	double			ambient;
+
+	int				obj_count;
     int             light_count;
-    int             memory;
-}                   t_scene;
+}					scene;
 
-typedef struct      s_object
+typedef struct		s_obj
 {
-    t_vec           *p1;
-    t_vec           *rot;
-    t_vec           col;
+    vector          *position;
+    vector          *rotation;
+	vector		    vector_color;
+	double		    radius;
+	int				color;
+	int				type;
+    float           current_t;
+    int             object_index;
+    int             refletcion;
 
-    float           radius;
-    unsigned int    color;
+    float           (*ray_intersect)(vector *dir, vector *point, object *figure);
+    void            (*find_normal)(vector *intersection_point, object *figure, vector *result_normal);
+}					object;
 
-    float           (*ray_intersect)(t_vec *dir, t_vec *point, t_object object);
-    t_vec           *(*color_find)(t_vec *point, t_scene *scene, t_vec *sender, int k);
 
-}                   t_object;
+vector create_vector(float i, float j, float k);
 
-t_object	cr_sphere(t_vec *p1, float radius, unsigned int color, t_vec *p4);
-t_object	cr_cone(t_vec *p1, float radius, unsigned int color, t_vec *p4);
-t_object	cr_cylinder(t_vec *p1, float radius, unsigned int color, t_vec *p4);
-t_object	cr_plane(t_vec *p1, t_vec *rot, unsigned int color);
-t_vec	*cr_point(float i, float j, float k);
+void make_circle(d_mlx *box, int i_pos, int j_pos, int r, int color);
 
-void fill_z_buffer(t_scene *scene);
+void white_filler(d_mlx *box);
 
-// parser
-t_vector	new_vec(double x, double y, double z);
-int		camera(t_data *p, char **tab);
-void	ambience(t_data *p, char *s);
+//sources
 
-// read
-int		read_file(t_data *p, char *file);
+//cone
 
-// error
-int		error_output(int error);
-void 	scene_error(void);
+float find_b_cone(vector *point, vector *p1, vector *rot, vector *dir);
+
+float find_c_cone(vector *point, vector *p1, vector *rot);
+
+float	ray_intersect_cone(vector *dir, vector *point, object *obj);
+
+void find_normal_cone(vector *intersection_point, object *figure, vector *result_normal);
+
+//cylinder
+
+float find_b_cyl(vector *point, vector *p1, vector *rot, vector *dir);
+
+float find_c_cyl(vector *point, vector *p1, vector *rot, float radius);
+
+float	ray_intersect_cylinder(vector *dir, vector *point, object *obj);
+
+void find_normal_cylinder(vector *intersection_point, object *figure, vector *result_normal);
+
+//plane
+
+float	ray_intersect_pl(vector *dir, vector *point, object *object);
+
+void find_normal_plane(vector *intersection_point, object *figure, vector *result_normal);
+
+//sphere
+
+vector	*cr_point(float i, float j, float k);
+
+double	get_t(float a, float b, float d);
+
+float sp_find_b(vector *point, vector *p1, vector *dir);
+
+float sp_find_c(vector *point, vector *p1, float radius);
+
+float	ray_intersect_sp(vector *dir, vector *point, object *object);
+
+void find_normal_sphere(vector *intersection_point, object *figure, vector *result_normal);
+
+
+//light_functions
+
+int get_light(int start, int end, double percentage);
+
+int get_diffuse_color(float offset, unsigned int color);
+
+void add_specular(vector *diffuse, float spec, float NdotL);
+
+int calculate_result_color(scene *scene, int i, float NdotL, float spec);
+
+float saturate(float d);
+
+vector *point_coords(vector *origin, float t, vector *dir);
+
+int ft_icol(vector *col);
+
+vector *ft_split_col(int color);
+
+//render
+
+void render(scene *scene, d_mlx *mlx);
+
+vector *find_direction(int i, int j, scene *scene);
+
+float cast_ray(vector *origin, vector *dir, scene *scene, unsigned int index);
+
+float calculate_diffuse(scene *scene, vector *origin, vector *direction, object *figure);
+
+float calculate_specular(scene *scene, vector *origin, vector *direction, object *figure);
+
+vector *helper_for_casting(scene *scene, vector *direction, object *figure); // ????
+
+float calculate_distance(vector *pos_light, vector *point);
+
+int is_path_clear(vector *point, scene *scene, object *object, int light_index);
+
+float find_diffuse(vector *point, scene *scene,  object *figure, int light_index);
+
+float find_specular(vector *point, scene *scene,  object *figure, int light_index);
+
+//vector_math
+
+float	vector_length(vector *vec);
+
+void	substr_vector_by_pointer(vector *vec1, vector *vec2, vector *result);
+
+void    add_vector_by_pointer(vector *vec1, vector *vec2, vector *result);
+
+vector	*substr_vector(vector *vec1, vector *vec2);
+
+void	ft_normilize(vector *vec);
+
+float	ft_scal(vector *vec1, vector *vec2);
+
+void	vector_float_multiply(vector *vec, float mult, vector *result);
+
+vector	*add_vector(vector *vec1, vector *vec2);
+
 int		error_handler(char *error);
 
-// init
-int		init(t_data *data);
-int		init_figur(t_data *data, char *type, char *line);
+//vector_rotation           ?? pointer
 
-// object
-t_obj	*new_object(t_obj new);
-t_obj	init_object(t_vector c, t_vector v, double a, double r);
-t_obj	init_object_color(t_obj obj, double specular, char *color, int type);
-int		create_object(t_data *data, char *line);
+vector	rotate_vector(vector dir, vector rot);
+
+vector	rotate_i(vector dir, double angle);
+
+vector	rotate_j(vector dir, double angle);
+
+vector	rotate_k(vector dir, double angle);
+
+
+// Parser functions
+
+//init
+
+int		init(d_mlx *data);
+
+int		init_figur(scene *data, char *type, char *line, int object_index);
+
+//parse
+
+int		create_camera(scene *p, char **tab);
+
+void	ambience(scene *p, char *s);
+
+//read
+
+int		read_file(d_mlx *init, scene *scene, char *file);
+
+//light
+
+t_light	*new_light(t_light l);
+
+t_light		init_light(double x, double y, double z, double intens);
+
+void	init_lights(scene *scene_obj, char **s, int light_index);
+
+int		set_light(scene *scene_obj, char **tab, int light_index);
+
+//object
+
+object	*new_object(object new);
+
+object	init_object_color(object *obj, double specular, char *color, int type);
+
+object	*init_object(vector c, vector v, double a, double r);
+
+int		create_object(scene *scene_obj, char *line);
+
 int		count_object(char *file);
 
-// light
-int			set_light(t_data *p, char **tab);
-void		init_lights(t_data *p, char **s);
-int			set_light(t_data *p, char **tab);
-t_light		init_light(double x, double y, double z, double intens);
-t_light		*new_light(t_light l);
+int		count_lights(char *file);
 
-// hook
+//utils
+
+void free_tab(char **tab);
+
+int len_tab(char **tab);
+
+void check_tab_len(char **tab);
+
+double ft_strtodbl(char *s);
+
+int find_type(char *type);
+
+double convert_to_rad(double a);
+
+//error
+
+int		error_output(int error);
+
+void	scene_error(void);
+
+//hook
+
 int		escape(void);
-int		key_press(int key, t_data *data);
 
-// utils
-void	free_tab(char **tab);
-int		len_tab(char **tab);
-void	check_tab_len(char **tab);
-double	ft_strtodbl(char *s);
-double	convert_to_rad(double a);
-int		find_type(char *type);
-
-// math
-
-float	ft_vec_len(t_vec *vec);
-float	find_cos(t_vec *vec1, t_vec *vec2);
-float	find_cos2(int i1, int j1, int k1, int i2, int j2, int k2);
-void	ft_normilize(t_vec *vec);
-t_vec	*ft_vec_mult(t_vec *vec, float mult);
-t_vec	*ftm_vec_mult(t_vec *vec, float mult);
-t_vec	*ft_substr(t_vec *vec1, t_vec *vec2);
-t_vec	*ft_add_vec(t_vec *vec1, t_vec *vec2);
-t_vec	*ftm_add_vec(t_vec *vec1, t_vec *vec2);
-float	ft_scal(t_vec *vec1, t_vec *vec2);
-int		error_handler(char *error);
-
-t_vec	*find_n_cyl(float t, t_vec *point, t_scene *scene, int index);
-float	ray_intersect_cylinder(t_vec *dir, t_vec *point, t_object obj);
-t_vec	*color_find_cylinder(t_vec *point, t_scene *scene, t_vec *sender, int k);
-float	ray_intersect_pl(t_vec *dir, t_vec *point, t_object object);
-t_vec 	*color_find_pl(t_vec *point, t_scene *scene, t_vec *sender, int k);
-float	ray_intersect_cone(t_vec *dir, t_vec *point, t_object obj);
-t_vec *find_cone_n(t_vec *point, t_scene *scene, t_vec *sender);
-t_vec	*color_find_cone(t_vec *point, t_scene *scene, t_vec *sender, int k);
-double	get_t(float a, float b, float d);
-float sp_find_b(t_vec *point, t_vec *p1, t_vec *dir);
-float sp_find_c(t_vec *point, t_vec *p1, float radius);
-float	ray_intersect_sp(t_vec *dir, t_vec *point, t_object object);
-t_vec *color_find_sp(t_vec *point, t_scene *scene, t_vec *sender, int k);
-
-
-// rot
-
-t_vec	vec_rot(t_vec dir, t_vec rot);
-t_vec	rot_k(t_vec dir, double angle);
-t_vec	rot_j(t_vec dir, double angle);
-t_vec	rot_i(t_vec dir, double angle);
-
-
-// col 
-void ft_add_spec(t_vec *diffuse, float spec, float NdotL);
-int ft_calc_res(t_scene *scene, int i, float NdotL, float spec);
-float saturate(float d);
-t_vec *point_coords(t_scene *scene, float t, t_vec *dir);
-int ft_icol(t_vec *col);
-t_vec *ft_split_col(int color);
-int get_light(int start, int end, double percentage);
-int get_col(float offset, unsigned int color);
-
-// render
-void render(t_scene *scene, t_mx *box);
-void helper_for_render(int i, int j, t_scene *scene,  t_mx *box);
-float cast_ray(t_vec *dir, t_scene *scene, unsigned int index);
-t_vec *helper_for_casting(t_vec *sender, t_scene *scene, t_vec *dir, unsigned int index);
-float calc_dist(t_vec *pos_light, t_vec *point);
-int path_clear(t_vec *point, t_scene *scene, int i, int k);
+int		key_press(int key, d_mlx *data);
 
 #endif

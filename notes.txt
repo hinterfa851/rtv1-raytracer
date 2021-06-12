@@ -1,0 +1,14 @@
+fix specular
+UPD - specular fixed, but commented for now - looks not so sexy, as I expect
+
+fix multiobjects
+UPD - ok
+
+fix other figures
+UPD - find rotation issue - i need to add initializing multiplying and check for unsecure moments
+UPD - objects looks fixed, except plane
+
+fix multilights
+
+
+strange vector math in plane

@@ -1,0 +1,24 @@
+#include "../includes/rtv1.h"
+
+int		error_output(int error)
+{
+	if (error == USAGE)
+		ft_putendl("Usage: ./rtv1 <scene>");
+	if (error == NO_CAMERA)
+		ft_putendl("File is invalid: no camera");
+	if (error == NO_OBJECTS)
+		ft_putendl("File is invalid: no objects");
+	if (error == NO_FD)
+		ft_putendl("Error: cannot open file");
+	if (error == PARAMETERS)
+		ft_putendl("Object is invalid: wrong number of parameters");
+	if (error == INVALID)
+		ft_putendl("Invalid parameter");
+	return (-1);
+}
+
+void	scene_error(void)
+{
+	ft_putendl("Incorect scene");
+	exit(0);
+}

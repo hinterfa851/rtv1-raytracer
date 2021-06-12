@@ -10,11 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-
-#include "get_next_line.h"
 #include "libft.h"
-#include <unistd.h>
-#include <stdlib.h>
+# define BUFF_SIZE 32
+# define MAX_FD 12288
 
 static int		line_end(char **str, char **line)
 {

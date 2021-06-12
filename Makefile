@@ -1,75 +1,16 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    Makefile                                           :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: glychest <glychest@student.42.fr>          +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2020/11/17 06:44:55 by glychest          #+#    #+#              #
-#    Updated: 2020/11/20 16:18:19 by hinterfa         ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
-
 NAME = rtv1
 
-SRC_DIR		:= 	sources/main \
- 				sources/parser \
- 				sources/algos \
+framework		=	-L/usr/X11/lib -lmlx -lXext -lX11 -lpthread -lm -g
 
-SRC			:=	sources/main/main.c \
-              	sources/parser/error.c \
-              	sources/parser/hook.c \
-              	sources/parser/init.c \
-              	sources/parser/light.c \
-              	sources/parser/object.c \
-              	sources/parser/parse.c \
-              	sources/parser/read.c \
-              	sources/parser/utils.c \
-              	sources/algos/cone.c \
-				sources/algos/cylinder.c \
-				sources/algos/helpers.c \
-				sources/algos/normals.c \
-				sources/algos/plane.c \
-				sources/algos/sphere.c \
-				sources/algos/rotation.c \
-				sources/algos/small_func.c \
-				sources/algos/render.c \
-				
-FLAGS			=	-Wall -Werror -Wextra
-framework		=	-L minilibx_macos -lmlx -framework OpenCL -framework OpenGL -framework AppKit -L libft -lft -O2
-OBJECTS			=	$(notdir $(patsubst %.c,%.o, $(wildcard $(SRC))))
-LIB_DIR			=	./libft/
-LIB_OBJS		=	$(addprefix $(LIB_DIR), $(LIB_OBJ))
-LIB_OBJ			=	*.o
-RT_INC			=	includes/rtv1.h
-LIB_INC			=	libft/libft.h
-LIB_MLX_FILE	=	minilibx_macos/libmlx.a
+SRC = main.c test_drawing.c vector_functions.c	\
+		parser/error.c	parser/hook.c parser/init.c parser/light.c	\
+		parser/object.c parser/parse.c parser/read.c parser/utils.c	\
+		sources/cone.c sources/cylinder.c sources/light_functions.c \
+		sources/plane.c sources/render.c sources/sphere.c sources/vector_math.c \
+		sources/vector_rotation.c sources/color_calculations.c \
 
 all: $(NAME)
+$(NAME):
+	gcc $(SRC) $(framework) libft/libft.a
 
-$(NAME): $(LIB_OBJS) $(LIB_MLX_FILE) $(OBJECTS)
-	gcc $(OBJECTS) -o $@ $(framework)
-
-VPATH := $(SRC_DIR)
-
-$(LIB_MLX_FILE):
-	make -C minilibx_macos
-
-$(LIB_DIR)%.o: $(LIB_DIR)%.c $(LIB_INC) libft/Makefile
-	make -C $(LIB_DIR)
-
-%.o: %.c $(RT_INC) Makefile
-	gcc $(FLAGS) -c $< -I include/
-
-clean:
-	make clean -C $(LIB_DIR)
-	make clean -C minilibx_macos
-	rm -rf *.o
-
-fclean: clean
-	make fclean -C $(LIB_DIR)
-	rm -rf $(NAME)
-
-re: fclean all
-
-.PHONY: all clean fclean re
+.PHONY: all 
