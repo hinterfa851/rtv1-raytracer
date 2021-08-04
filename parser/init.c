@@ -51,9 +51,10 @@ int		init_figur(scene *data, char *type, char *line, int object_index)
 	ft_atoi(tab[2])), create_vector(ft_strtodbl(tab[3]),
 	ft_strtodbl(tab[4]), ft_strtodbl(tab[5])),
 	ft_strtodbl(tab[6]), ft_strtodbl(tab[7]));
-	printf("init figur i, j, k - %f\t%f\t%f\n", obj->rotation->i, obj->rotation->j, obj->rotation->k);
+//	printf("init figur i, j, k - %f\t%f\t%f\n", obj->rotation->i, obj->rotation->j, obj->rotation->k);
 	init_object_color(obj, ft_strtodbl(tab[8]), tab[9], t);
-	
+	obj->metallic = ft_strtodbl(tab[10]);
+	obj->roughness = ft_strtodbl(tab[11]);
 	//old
 //	new_obj = new_object(obj);
 //	ft_lstadd(&data->objects, ft_lstnew(new_obj, sizeof(object)));

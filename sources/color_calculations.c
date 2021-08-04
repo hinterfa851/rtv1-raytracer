@@ -2,31 +2,32 @@
 
 float calculate_diffuse(scene *scene,vector *origin, vector *direction, object *figure)
 {
-    int light_index;
+//    int light_index;
     vector *intersection_point;
     float distance;
     float result;
     float result_per_light;
 
     intersection_point = point_coords(origin, figure->current_t, direction);
-    light_index = 0;
+//    light_index = 0;
     result = 0;
-    while (light_index < scene->light_count)
-    {
-        distance = calculate_distance(&scene->lights_array[light_index].position, intersection_point);
+    // while (light_index < scene->light_count)
+    // {
+        distance = calculate_distance(&scene->camera.position, intersection_point);
         // if (is_path_clear(point, scene, figure, light_index))
         // {
  //           result = 1;
-            result_per_light = find_diffuse(intersection_point, scene, figure, light_index);
+//            result_per_light = find_diffuse(intersection_point, scene, figure, light_index);
+            result_per_light = find_diffuse(intersection_point, scene, figure, 0);
             if (result_per_light > 0)
             {
-                result_per_light *= scene->lights_array[light_index].intensity / (distance * distance);
+     //           result_per_light *= scene->lights_array[light_index].intensity / (distance * distance);
                 result += result_per_light;
             }
  //       }
-        light_index++;
-    }
-    result += 0.1;  // adding ambient lighting
+       // light_index++;
+//    }
+//    result += 0.1;  // adding ambient lighting
     free(intersection_point);
     return (result);
 }

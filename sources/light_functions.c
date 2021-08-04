@@ -5,7 +5,19 @@ int get_light(int start, int end, double percentage)
     return ((int)((1 - percentage) * start + percentage * end));
 }
 
-int get_diffuse_color(float offset, unsigned int color)
+
+void get_vector_light(vector *start, vector *end, float percentage)
+{
+    vector *helper;
+
+    helper = malloc(sizeof(vector));
+    vector_float_multiply(start, 1 - percentage, start);
+    vector_float_multiply(end, percentage, helper);
+    add_vector_by_pointer(start, helper, start);
+    free(helper);
+}
+
+int get_diffuse_color(float offset, unsigned int color, unsigned int color2)
 {
     int     red;
     int     green;
@@ -14,7 +26,8 @@ int get_diffuse_color(float offset, unsigned int color)
     int     c2;
 
     c2 = color;
-    c1 = 0x000000;
+//    c1 = 0x000000;
+    c1 = color2;
     red = get_light((c1 >> 16) & 0xFF, (c2 >> 16) & 0xFF, offset);
     green = get_light((c1 >> 8) & 0xFF, (c2 >> 8) & 0xFF, offset);
     blue = get_light(c1 & 0xFF, c2 & 0xFF, offset);

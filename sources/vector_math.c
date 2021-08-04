@@ -28,7 +28,7 @@ vector	*substr_vector(vector *vec1, vector *vec2)
 {
 	vector *new_vector;
 
-	new_vector = malloc(sizeof(vector *));
+	new_vector = malloc(sizeof(vector));
 	new_vector->i = vec1->i - vec2->i;
 	new_vector->j = vec1->j - vec2->j;
 	new_vector->k = vec1->k - vec2->k;
@@ -62,6 +62,14 @@ void vector_float_multiply(vector *vec, float mult, vector *result)
 	result->j = vec->j * mult;
 	result->k = vec->k * mult;
 }
+
+void vector_vector_multiply(vector *vec, vector *vec2, vector *result)
+{
+	result->i = vec->i * vec2->i;
+	result->j = vec->j * vec2->j;
+	result->k = vec->k * vec2->k;
+}
+
 
 float	ft_scal(vector *vec1, vector *vec2)
 {

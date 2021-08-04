@@ -94,7 +94,7 @@ int		create_object(scene *scene_obj, char *line)
 	ft_strequ(tab[0], "cone") || ft_strequ(tab[0], "plane"))
 	{
 		ret = init_figur(scene_obj, tab[0], tab[1], object_count++);
-		printf("i, j, k - %f\t%f\t%f\n", scene_obj->objects_array[0].rotation->i, scene_obj->objects_array[0].rotation->j, scene_obj->objects_array[0].rotation->k);
+//		printf("i, j, k - %f\t%f\t%f\n", scene_obj->objects_array[0].rotation->i, scene_obj->objects_array[0].rotation->j, scene_obj->objects_array[0].rotation->k);
 		if (ret == -1)
 			return (-1);
 	}

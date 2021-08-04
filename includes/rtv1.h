@@ -9,6 +9,8 @@
 # include <unistd.h>
 # include <fcntl.h>
 # include <stdio.h>
+# include <stdlib.h>
+# include <time.h>
 
 # define SPHERE 1
 # define CYLINDER 2
@@ -25,6 +27,7 @@
 # define RED 16711680
 # define GREEN 65280
 # define BLUE 2831278
+# define WHITE 16777214
 
 # define WIN_SIZE_X	600
 # define WIN_SIZE_Y	600
@@ -93,6 +96,8 @@ typedef struct		s_obj
     float           current_t;
     int             object_index;
     int             refletcion;
+    float           metallic;
+    float           roughness;             
 
     float           (*ray_intersect)(vector *dir, vector *point, object *figure);
     void            (*find_normal)(vector *intersection_point, object *figure, vector *result_normal);
@@ -152,7 +157,9 @@ void find_normal_sphere(vector *intersection_point, object *figure, vector *resu
 
 int get_light(int start, int end, double percentage);
 
-int get_diffuse_color(float offset, unsigned int color);
+void get_vector_light(vector *start, vector *end, float percentage);
+
+int get_diffuse_color(float offset, unsigned int color, unsigned int color2);
 
 void add_specular(vector *diffuse, float spec, float NdotL);
 
@@ -203,6 +210,8 @@ void	ft_normilize(vector *vec);
 float	ft_scal(vector *vec1, vector *vec2);
 
 void	vector_float_multiply(vector *vec, float mult, vector *result);
+
+void vector_vector_multiply(vector *vec, vector *vec2, vector *result);
 
 vector	*add_vector(vector *vec1, vector *vec2);
 

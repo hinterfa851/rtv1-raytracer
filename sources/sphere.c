@@ -41,13 +41,13 @@ float sp_find_c(vector *point, vector *p1, float radius)
 {
 	float res;
 	vector *a;
-	vector *b;
+//	vector *b;
 
 	a = substr_vector(point, p1);
-	b = substr_vector(point, p1);
-	res = ft_scal(a, b) - radius * radius;
+//	b = substr_vector(point, p1);
+	res = ft_scal(a, a) - radius * radius;
 	free(a);
-	free(b);
+//	free(b);
 	return (res);
 }
 
